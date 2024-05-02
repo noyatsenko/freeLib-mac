@@ -1,0 +1,74 @@
+cmake_minimum_required(VERSION 3.5)
+
+set(FREELIB_VERSION_MAJOR "6")
+set(FREELIB_VERSION_MINOR "0")
+set(FREELIB_VERSION_PATCH "80")
+set(FREELIB_VERSION "${FREELIB_VERSION_MAJOR}.${FREELIB_VERSION_MINOR}.${FREELIB_VERSION_PATCH}")
+project(freeLib VERSION "${FREELIB_VERSION}" LANGUAGES CXX)
+
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+# Retrieve git HEAD revision hash
+set(GIT_HEAD_OVERRIDE "" CACHE STRING "Manually set the Git HEAD hash when missing (eg, when no .git folder exists)")
+execute_process(COMMAND git rev-parse --short=7 HEAD
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_HEAD
+        ERROR_QUIET)
+string(STRIP "${GIT_HEAD}" GIT_HEAD)
+if(GIT_HEAD STREQUAL "" AND NOT GIT_HEAD_OVERRIDE STREQUAL "")
+    string(SUBSTRING "${GIT_HEAD_OVERRIDE}" 0 7 GIT_HEAD)
+elseif(EXISTS ${CMAKE_SOURCE_DIR}/.gitrev)
+    file(READ ${CMAKE_SOURCE_DIR}/.gitrev GIT_HEAD)
+endif()
+message(STATUS "Found Git HEAD Revision: ${GIT_HEAD}\n")
+
+
+if(UNIX AND NOT APPLE)
+    file(COPY KindleGenLinux/kindlegen DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/freeLib/src)
+    file(COPY freeLib/src/xsl/fonts DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/xsl)
+
+    include(GNUInstallDirs)
+    set(DATA_INSTALL_DIR "${CMAKE_INSTALL_DATADIR}/freelib")
+
+add_subdirectory(freeLib/src/)
+add_subdirectory(freeLib/data/)
+
+install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/freeLib/src/kindlegen DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/xsl/fonts DESTINATION ${DATA_INSTALL_DIR})
+set_target_properties(freelib PROPERTIES
+    MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
+    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+)
+endif()
+
+if(APPLE)
+    file(COPY KindleGen_Mac/kindlegen DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/freeLib/src)
+    file(COPY freeLib/src/xsl/fonts DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/xsl)
+
+    include(GNUInstallDirs)
+    set(DATA_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/Contents/MacOS")
+    set(CMAKE_INSTALL_BINDIR "${CMAKE_INSTALL_PREFIX}/Contents/MacOS")
+
+add_subdirectory(freeLib/src/)
+add_subdirectory(freeLib/data/)
+
+    install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/freeLib/src/freelib.app DESTINATION /Applications/)
+    install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/freeLib/src/kindlegen DESTINATION ${CMAKE_INSTALL_BINDIR})
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/xsl/fonts DESTINATION ${DATA_INSTALL_DIR})
+    install(FILES freeLib/src/library.icns DESTINATION ${CMAKE_INSTALL_PREFIX}/Contents/Resources)
+
+    set_target_properties(freelib PROPERTIES
+        MACOSX_BUNDLE TRUE
+        MACOSX_BUNDLE_GUI_IDENTIFIER freelib
+        MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+        MACOSX_BUNDLE_SHORT_VERSION_STRING ${FREELIB_VERSION}
+        MACOSX_BUNDLE_ICON_FILE library.icns
+    )
+endif()
+
+

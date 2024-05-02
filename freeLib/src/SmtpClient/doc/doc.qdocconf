@@ -1,0 +1,35 @@
+
+include($QT_INSTALL_DOCS/global/compat.qdocconf)
+include($QT_INSTALL_DOCS/global/fileextensions.qdocconf)
+include($QT_INSTALL_DOCS/global/qt-cpp-defines.qdocconf)
+#include($QT_INSTALL_DOCS/global/macros.qdocconf)
+
+project = Smtp-for-Qt
+description = SMTP Library for Qt Reference Documentation
+url = https://pages.github.com/comm5/
+sourcedirs = ../src
+sources.fileextensions = "*.cpp"
+
+headerdirs = ../src
+headers.fileextensions = "*.h"
+headers += ../src/SmtpMime
+moduleheader = SmtpMime
+
+examplesdir = ../demos
+outputdir = ../docs/
+outputformats = HTML
+
+defines += SMTP_MIME_LIBRARY_STATIC
+defines += SMTP_MIME_EXPORT
+clangdefines += SMTP_MIME_LIBRARY_STATIC
+
+Cpp.ignoredirectives += SMTP_MIME_EXPORT
+
+# path to the CSS files if you would like to use any (here it's the current directory)
+HTML.stylesheets = style.css
+# the string that actually includes the CSS into documentation file
+HTML.headerstyles = "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\"/>\n"
+# what to append to every page after header
+HTML.postheader = "<p class=\"header\">Smtp-for-Qt</p><hr/>"
+# what to append to every page after the content
+HTML.footer = "<hr/><p class=\"footer\"><small>Maintained by <a href="https://comm5.com.br">Comm5</a></small></p>"
