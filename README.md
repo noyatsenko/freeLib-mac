@@ -17,36 +17,9 @@ freeLib для MacOS - каталогизатор для библиотек LibR
 * Настройка форматирования книг (шрифты, буквица, заголовки, переносы, сноски)
 * Чтение книг с помощью внешних приложений. Можно назначить отдельную программу для каждого формата.
 
+### Просто использовать
+Скачайте [готовый пакет](https://github.com/noyatsenko/freeLib-mac/releases) под вашу архитектуру (универсальный Intel, новый Arm)
 
 ### Сборка и установка из исходников в MacOS
 
-
-Установить и настроить HomeBrew 
-[https://brew.sh](https://brew.sh)
-
-Установить компоненты QT
-```
-brew install cmake qt6
-```
-
-Скачать и собрать проект
-```
-git clone --recurse-submodules https://github.com/noyatsenko/freeLib-mac.git freeLib
-mkdir freeLib/build && cd freeLib/build
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/Applications/freelib.app .. && cmake --build . -j4
-mv /Applications/freelib.app /Applications/freelib_old.app
-make install
-```
-
-Удалить временные файлы сборки
-```
-cd ../..
-rm -rf ./freeLib
-```
-
-Можно удалить CommandLineTools (4Гб)
-```
-sudo rm -r /Library/Developer/CommandLineTools
-```
-
-HomeBrew не удалять
+Используйте [сборочный скрипт из репозитория](./deploy_macos.sh)
