@@ -1,3 +1,6 @@
+# Использование не рекомендовано:
+# С новыми версиями Брю больше не собирается -- кроме того что изначально некорректно деплоился и требовал специальной доработки.
+
 # HomeBrew
 echo "Installing HomeBrew & CommandLineTools"
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
